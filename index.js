@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const morgan = require("morgan");
 const colors = require("colors");
+const path = require("path");
 const app = express();
 
 //BODY PARSER
@@ -29,6 +30,17 @@ if (process.env.NODE_ENV === "development") {
 
 //ROUTERS
 app.use("/api/v1", require("./routes/todos"));
+
+//SERVE STATIC ASSETS IF IN PRODUCTION
+if (process.env.NODE_ENV === "production") {
+  //SET STATIC FOLDER
+  app.use(express.static("client/build"));
+
+  //ANY REQUEST ASIDE FROM "/api/v1"
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 const PORT = process.env.PORT;
 
