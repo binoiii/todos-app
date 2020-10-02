@@ -1,6 +1,6 @@
 import React, { useContext, useState, useRef } from "react";
 import WarningModal from "./WarningModal";
-import Loader from "./Loader";
+import LoaderCompleted from "./LoaderCompleted";
 import { InputGroup, FormControl, Button } from "react-bootstrap";
 import { Check } from "react-bootstrap-icons";
 import { GlobalContext } from "../context/GlobalState";
@@ -70,7 +70,7 @@ const Todo = ({ todos: { _id, todo } }) => {
       <InputGroup.Prepend>
         <Button variant="outline-warning rounded-left" onClick={handleShow}>
           <div style={{ width: "21px" }}>
-            {(loadingStatuses.complete && selected && <Loader />) || (
+            {(loadingStatuses.complete && selected && <LoaderCompleted />) || (
               <Check size="20" />
             )}
           </div>

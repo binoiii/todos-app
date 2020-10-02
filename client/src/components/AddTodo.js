@@ -2,7 +2,7 @@ import React, { useState, useContext, useRef } from "react";
 import { Container, InputGroup, FormControl, Button } from "react-bootstrap";
 import { Plus } from "react-bootstrap-icons";
 import { GlobalContext } from "../context/GlobalState";
-import Loader from "./Loader";
+import LoaderPrimary from "./LoaderPrimary";
 
 const AddTodo = () => {
   const { addTodo, loadingStatuses, setLoadingStatus } = useContext(
@@ -54,7 +54,7 @@ const AddTodo = () => {
             onClick={handleAddClick}
           >
             <div style={{ width: "21px" }}>
-              {(loadingStatuses.add && <Loader />) || <Plus size="20" />}
+              {(loadingStatuses.add && <LoaderPrimary />) || <Plus size="20" />}
             </div>
           </Button>
         </InputGroup.Prepend>

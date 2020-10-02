@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import Todo from "./Todo";
-import Loader from "./Loader";
+import LoaderPrimary from "./LoaderPrimary";
 import { Container } from "react-bootstrap";
 import { GlobalContext } from "../context/GlobalState";
 
@@ -16,7 +16,7 @@ const Todos = () => {
     <Container className="mb-4">
       {(loadingStatuses.get && (
         <div className="d-block text-center">
-          <Loader />
+          <LoaderPrimary />
         </div>
       )) ||
         todos.map((todos) => <Todo key={todos._id} todos={todos} />)}

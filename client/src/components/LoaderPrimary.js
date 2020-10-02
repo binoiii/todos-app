@@ -1,7 +1,7 @@
 import React from "react";
 import { Spinner } from "react-bootstrap";
 
-const Loader = () => {
+const LoaderPrimary = () => {
   return (
     <Spinner
       as="span"
@@ -13,4 +13,4 @@ const Loader = () => {
   );
 };
 
-export default Loader;
+export default LoaderPrimary;
