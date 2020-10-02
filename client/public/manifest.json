@@ -1,0 +1,14 @@
+{
+  "short_name": "To Do App",
+  "name": "To Do App MERN Stack",
+  "icons": [
+    {
+      "src": "todo-icon.jpg",
+      "type": "image/jpg"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
