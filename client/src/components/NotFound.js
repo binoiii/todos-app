@@ -11,7 +11,7 @@ const NotFound = () => {
       <Container className="d-flex flex-column align-items-center">
         <CloudSlash className="" color="#4582ec" size="250" />
         <p className="text-primary text-center display-4 font-weight-bold">
-          404 - edit
+          404
         </p>
       </Container>
     </div>
