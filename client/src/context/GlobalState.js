@@ -3,22 +3,98 @@ import axios from "axios";
 import AppReducer from "./AppReducer";
 
 const initialState = {
+  credentials: {
+    _id: "",
+    name: "",
+    token: "",
+    isAuthenticated: false,
+  },
   todos: [],
   loadingStatuses: {
+    logIn: false,
+    register: false,
     get: true,
     add: false,
     complete: false,
   },
+  errorMessage: "",
 };
 
 const GlobalContext = createContext();
 
 const GlobalProvider = ({ children }) => {
-  const [state, dispatcher] = useReducer(AppReducer, initialState);
+  const [
+    { credentials, todos, loadingStatuses, errorMessage },
+    dispatcher,
+  ] = useReducer(AppReducer, initialState);
+
+  console.log();
+
+  const { _id, token } = credentials;
+
+  const requestConfig = (id) => {
+    const config = {
+      headers: {
+        "Context-Type": "application/json",
+      },
+    };
+
+    if (token || id) {
+      config.headers["x-auth-token"] = token;
+      config.headers["id"] = id;
+    }
+    return config;
+  };
+
+  const loginUser = async (credentials) => {
+    try {
+      const user = await axios.post("/login", credentials);
+      dispatcher({
+        type: "SUCCESS_LOGIN",
+        payload: user.data,
+      });
+    } catch (err) {
+      dispatcher({
+        type: "ERROR_LOGIN",
+        payload: err.response.data,
+      });
+    }
+  };
+
+  const registerUser = async (user) => {
+    try {
+      const newUser = await axios.post("/register", user);
+      dispatcher({
+        type: "SUCCESS_REGISTER",
+        payload: newUser.data,
+      });
+    } catch (err) {
+      dispatcher({
+        type: "ERROR_REGISTER",
+        payload: err.response.data.message,
+      });
+    }
+  };
+
+  const logoutUser = () => {
+    dispatcher({
+      type: "LOGOUT_USER",
+    });
+  };
+
+  const clearErrorMessage = () => {
+    dispatcher({
+      type: "CLEAR_ERRORMESSAGE",
+    });
+  };
 
   const getTodos = async () => {
     try {
-      const res = await axios.get("/api/v1/todos");
+      const res = await axios.get("/api/todos", {
+        params: {
+          _id,
+        },
+      });
       dispatcher({
         type: "GET_TODOS",
         payload: res.data.data,
@@ -31,14 +107,20 @@ const GlobalProvider = ({ children }) => {
     }
   };
 
+  const loadLocalCredentials = (credentials) => {
+    dispatcher({
+      type: "LOAD_LOCALCREDENTIALS",
+      payload: credentials,
+    });
+  };
+
   const addTodo = async (todo) => {
-    const config = {
-      headers: {
-        "Contenxt-Type": "application/json",
-      },
-    };
     try {
-      const res = await axios.post("/api/v1/todos", todo, config);
+      const res = await axios.post(
+        `/api/todos/${_id}`,
+        { todo },
+        requestConfig()
+      );
       dispatcher({
         type: "ADD_TODO",
         payload: res.data.data,
@@ -50,10 +132,9 @@ const GlobalProvider = ({ children }) => {
       });
     }
   };
-
   const completeTodo = async (id) => {
     try {
-      await axios.delete(`/api/v1/todos/${id}`);
+      await axios.delete(`/api/todos/${_id}`, requestConfig(id));
       dispatcher({ type: "COMPLETE_TODO", payload: id });
     } catch (err) {
       dispatcher({
@@ -63,10 +144,10 @@ const GlobalProvider = ({ children }) => {
     }
   };
 
-  const editTodo = async (todo) => {
+  const editTodo = async (body) => {
     try {
-      await axios.put(`/api/v1/todos/${todo._id}`, { todo: todo.todo });
-      dispatcher({ type: "EDIT_TODO", payload: todo });
+      const res = await axios.put(`/api/todos/${_id}`, body, requestConfig());
+      dispatcher({ type: "EDIT_TODO", payload: res.data.data });
     } catch (err) {
       dispatcher({
         type: "ERROR_TODO",
@@ -85,10 +166,17 @@ const GlobalProvider = ({ children }) => {
   return (
     <GlobalContext.Provider
       value={{
-        todos: state.todos,
-        loadingStatuses: state.loadingStatuses,
+        loginUser,
+        logoutUser,
+        registerUser,
+        loadLocalCredentials,
+        credentials: credentials,
         setLoadingStatus,
+        loadingStatuses: loadingStatuses,
+        errorMessage: errorMessage,
+        clearErrorMessage,
         getTodos,
+        todos: todos,
         addTodo,
         completeTodo,
         editTodo,

@@ -5,12 +5,24 @@ import { Container } from "react-bootstrap";
 import { GlobalContext } from "../context/GlobalState";
 
 const Todos = () => {
-  const { todos, getTodos, loadingStatuses } = useContext(GlobalContext);
+  const {
+    todos,
+    getTodos,
+    loadingStatuses,
+    loadLocalCredentials,
+    credentials,
+  } = useContext(GlobalContext);
 
   useEffect(() => {
-    getTodos();
+    const localCredentials = localStorage.getItem("credentials");
+    loadLocalCredentials(JSON.parse(localCredentials));
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (credentials._id) getTodos();
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [credentials]);
 
   return (
     <Container className="mb-4">
