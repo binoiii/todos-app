@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const colors = require("colors");
 const path = require("path");
 const app = express();
+const { authJWT } = require("./middleware/auth");
 
 //BODY PARSER
 app.use(express.json());
@@ -20,16 +21,11 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
-//PAGE NOT FOUND
-// app.use((req, res, next) => {
-//   res.status(404).json({
-//     succes: false,
-//     message: "Page Not Founded",
-//   });
-// });
-
 //ROUTERS
-app.use("/api/v1", require("./routes/todos"));
+app.use("/login", require("./routes/login"));
+app.use("/register", require("./routes/register"));
+app.use("/api/todos", require("./routes/todos"));
+app.use("/api/user", require("./routes/user"));
 
 //SERVE STATIC ASSETS IF IN PRODUCTION
 if (process.env.NODE_ENV === "production") {
@@ -42,6 +38,7 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
+//LITSEN TO PORT
 const PORT = process.env.PORT;
 
 app.listen(PORT, () =>

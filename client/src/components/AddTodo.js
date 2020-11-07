@@ -5,13 +5,18 @@ import { GlobalContext } from "../context/GlobalState";
 import LoaderPrimary from "./LoaderPrimary";
 
 const AddTodo = () => {
-  const { addTodo, loadingStatuses, setLoadingStatus } = useContext(
-    GlobalContext
-  );
-
-  const inputRef = useRef(null);
+  const {
+    addTodo,
+    loadingStatuses,
+    setLoadingStatus,
+    credentials: { name },
+  } = useContext(GlobalContext);
 
   const [todo, setTodo] = useState("");
+
+  const [firstName] = name.split(" ");
+
+  const inputRef = useRef(null);
 
   const handleChange = (e) => setTodo(e.target.value);
 
@@ -20,13 +25,9 @@ const AddTodo = () => {
   };
 
   const handleAddTodo = () => {
-    const newTodo = {
-      todo,
-    };
-
     if (todo) {
       setLoadingStatus({ add: true });
-      addTodo(newTodo);
+      addTodo(todo);
       setTodo("");
     }
   };
@@ -60,7 +61,7 @@ const AddTodo = () => {
         </InputGroup.Prepend>
 
         <FormControl
-          placeholder="To do ..."
+          placeholder={`${firstName}, what is your todo?`}
           aria-label="Todo task"
           aria-describedby="basic-addon2"
           className="border-secondary border-left-0"

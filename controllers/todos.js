@@ -1,13 +1,18 @@
-const Todo = require("../models/Todos");
+const UserTodo = require("../models/UserTodo");
 const mongoose = require("mongoose");
+const { findById } = require("../models/UserTodo");
 mongoose.set("useFindAndModify", false);
+
 // @desc    GET ALL TODOS
-// @route   GET | /api/v1/todos
+// @route   GET | /api/todos
 // @access  PUBLIC
 
 exports.getTodos = async (req, res) => {
+  const _id = req.query._id;
+  const userTodos = await UserTodo.findById({ _id });
+
+  const todos = userTodos ? userTodos.todos : [];
   try {
-    const todos = await Todo.find();
     res.status(200).json({
       success: true,
       count: todos.length,
@@ -16,19 +21,28 @@ exports.getTodos = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       success: false,
-      error: "Server Error",
+      message: "Server Error",
     });
   }
 };
 
 // @desc    ADD TODO
-// @route   POST | /api/v1/todos
-// @access  PUBLIC
+// @route   POST | /api/todos
+// @access  PRIVATE
 
 exports.addTodo = async (req, res) => {
   try {
-    const newTodo = await Todo.create(req.body);
-    res.status(201).send({
+    const { todo } = req.body;
+    const { _id } = req.params;
+
+    const user = await UserTodo.findById({ _id });
+
+    user.todos.push({ todo });
+
+    const { todos } = await user.save();
+    const newTodo = todos[todos.length - 1];
+
+    res.status(201).json({
       success: true,
       data: newTodo,
     });
@@ -49,22 +63,34 @@ exports.addTodo = async (req, res) => {
 };
 
 // @ desc   EDIT TODO
-// @ route  PUT | /api/v1/todos/:id
-// @ access PUBLIC
+// @ route  PUT | /api/todos/:id
+// @ access PRIVATE
 
 exports.editTodo = async (req, res) => {
-  console.log(req.body);
   try {
-    const todo = await Todo.findOneAndUpdate({ _id: req.params.id }, req.body);
-    if (!todo) {
+    const { _id } = req.params;
+    const { id, todo } = req.body;
+
+    const userTodo = await UserTodo.findOneAndUpdate(
+      {
+        _id,
+        "todos._id": id,
+      },
+      { $set: { "todos.$.todo": todo } },
+      { projection: { todos: { $elemMatch: { _id: id } } } }
+    );
+
+    const updatedTodo = userTodo.todos[0];
+
+    if (!updatedTodo) {
       res.status(404).json({
         success: false,
-        error: "To do not found",
+        error: "Todo not found",
       });
     } else {
       res.status(200).json({
         success: true,
-        message: `To do "${todo.todo}" was updated.`,
+        data: updatedTodo,
       });
     }
   } catch (err) {
@@ -75,30 +101,46 @@ exports.editTodo = async (req, res) => {
   }
 };
 
-// @desc    DELETE TODO
-// @route   DELETE | /api/v1/todos/:id
-// @access  PUBLIC
+// @desc    COMPLETE TODO
+// @route   /api/todos/:id
+// @access  PRIVATE
 
-exports.deleteTodo = async (req, res) => {
+exports.completeTodo = async (req, res) => {
+  // try {
+  const { _id } = req.params;
+  const { id } = req.headers;
+
+  // const user = await UserTodo.findOneAndUpdate(
+  //   { _id },
+  //   { $pull: { todos: { _id: id } } }
+  // );
+
+  const userTodo = await UserTodo.findOneAndUpdate(
+    {
+      _id,
+      "todos._id": id,
+    },
+    { $pull: { todos: { _id: id } } },
+    { projection: { todos: { $elemMatch: { _id: id } } } }
+  );
+
+  const deletedTodo = userTodo.todos[0];
   try {
-    const deletedTodo = await Todo.findByIdAndDelete({ _id: req.params.id });
-
     if (!deletedTodo) {
       res.status(404).json({
         success: false,
-        error: "To do not found",
+        error: "Todo not found",
       });
     } else {
       res.status(200).json({
         success: true,
-        message: "Todo deleted.",
         data: deletedTodo,
       });
     }
   } catch (err) {
     res.status(500).json({
       success: false,
-      error: "Server Error",
+      error: "Server error",
     });
   }
 };

@@ -11,7 +11,7 @@ function WarningModal({ handleComplete, handleCancel, show, todo }) {
             <CheckCircle color="#f0ad4e" size={80} />
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body className="mx-auto my-3">
+        <Modal.Body className="mx-auto my-3 text-center">
           Congratulations{" "}
           <strong style={{ textTransform: "uppercase" }}>{`"${todo}"`}</strong>{" "}
           task completed!

@@ -1,18 +1,21 @@
 const express = require("express");
 const router = express.Router();
+const { authJWT } = require("../middleware/auth");
+
 const {
   getTodos,
   addTodo,
   editTodo,
-  deleteTodo,
+  completeTodo,
 } = require("../controllers/todos");
 
-const { registerUser } = require("../controllers/auth");
+router.route("/").get(getTodos);
 
-router.route("/todos").get(getTodos).post(addTodo);
-
-router.route("/todos/:id").put(editTodo).delete(deleteTodo);
-
-router.route("/register").post(registerUser);
+router
+  .route("/:_id")
+  .all(authJWT)
+  .post(addTodo)
+  .put(editTodo)
+  .delete(completeTodo);
 
 module.exports = router;
