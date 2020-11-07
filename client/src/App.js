@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Redirect,
-  Route,
-  Switch,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import LogIn from "./components/LogIn";
 import Register from "./components/Register";
 import LandingPage from "./components/LandingPage";
@@ -15,7 +10,6 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
-  const authenticated = localStorage.getItem("authenticated");
   return (
     <Router>
       <Switch>
