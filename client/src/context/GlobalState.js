@@ -1,6 +1,7 @@
 import React, { createContext, useReducer } from "react";
 import axios from "axios";
 import AppReducer from "./AppReducer";
+import * as actions from "../util/actionTypes";
 
 const initialState = {
   credentials: {
@@ -50,12 +51,12 @@ const GlobalProvider = ({ children }) => {
     try {
       const user = await axios.post("/login", credentials);
       dispatcher({
-        type: "SUCCESS_LOGIN",
+        type: actions.SUCCESS_LOGIN,
         payload: user.data,
       });
     } catch (err) {
       dispatcher({
-        type: "ERROR_LOGIN",
+        type: actions.ERROR_LOGIN,
         payload: err.response.data,
       });
     }
@@ -65,12 +66,12 @@ const GlobalProvider = ({ children }) => {
     try {
       const newUser = await axios.post("/register", user);
       dispatcher({
-        type: "SUCCESS_REGISTER",
+        type: actions.SUCCESS_REGISTER,
         payload: newUser.data,
       });
     } catch (err) {
       dispatcher({
-        type: "ERROR_REGISTER",
+        type: actions.ERROR_REGISTER,
         payload: err.response.data.message,
       });
     }
@@ -78,13 +79,13 @@ const GlobalProvider = ({ children }) => {
 
   const logoutUser = () => {
     dispatcher({
-      type: "LOGOUT_USER",
+      type: actions.LOGOUT_USER,
     });
   };
 
   const clearErrorMessage = () => {
     dispatcher({
-      type: "CLEAR_ERRORMESSAGE",
+      type: actions.CLEAR_ERRORMESSAGE,
     });
   };
 
@@ -96,12 +97,12 @@ const GlobalProvider = ({ children }) => {
         },
       });
       dispatcher({
-        type: "GET_TODOS",
+        type: actions.GET_TODOS,
         payload: res.data.data,
       });
     } catch (err) {
       dispatcher({
-        type: "ERROR_TODO",
+        type: actions.ERROR_TODO,
         payload: err.response.data.error,
       });
     }
@@ -109,7 +110,7 @@ const GlobalProvider = ({ children }) => {
 
   const loadLocalCredentials = (credentials) => {
     dispatcher({
-      type: "LOAD_LOCALCREDENTIALS",
+      type: actions.LOAD_LOCALCREDENTIALS,
       payload: credentials,
     });
   };
@@ -122,12 +123,12 @@ const GlobalProvider = ({ children }) => {
         requestConfig()
       );
       dispatcher({
-        type: "ADD_TODO",
+        type: actions.ADD_TODO,
         payload: res.data.data,
       });
     } catch (err) {
       dispatcher({
-        type: "ERROR_TODO",
+        type: actions.ERROR_TODO,
         payload: err.response.data.error,
       });
     }
@@ -135,10 +136,10 @@ const GlobalProvider = ({ children }) => {
   const completeTodo = async (id) => {
     try {
       await axios.delete(`/api/todos/${_id}`, requestConfig(id));
-      dispatcher({ type: "COMPLETE_TODO", payload: id });
+      dispatcher({ type: actions.COMPLETE_TODO, payload: id });
     } catch (err) {
       dispatcher({
-        type: "ERROR_TODO",
+        type: actions.ERROR_TODO,
         payload: err.response.data.error,
       });
     }
@@ -147,10 +148,10 @@ const GlobalProvider = ({ children }) => {
   const editTodo = async (body) => {
     try {
       const res = await axios.put(`/api/todos/${_id}`, body, requestConfig());
-      dispatcher({ type: "EDIT_TODO", payload: res.data.data });
+      dispatcher({ type: actions.EDIT_TODO, payload: res.data.data });
     } catch (err) {
       dispatcher({
-        type: "ERROR_TODO",
+        type: actions.ERROR_TODO,
         payload: err.response.data.error,
       });
     }
@@ -158,7 +159,7 @@ const GlobalProvider = ({ children }) => {
 
   const setLoadingStatus = (loadingStatus) => {
     dispatcher({
-      type: "SET_LOADING",
+      type: actions.SET_LOADING,
       payload: loadingStatus,
     });
   };

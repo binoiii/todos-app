@@ -27,6 +27,7 @@ const Register = ({ history }) => {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
+    console.log("run");
     if (credentials.isAuthenticated) {
       localStorage.setItem("authenticated", true);
       localStorage.setItem("credentials", JSON.stringify(credentials));
