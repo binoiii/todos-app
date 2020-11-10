@@ -1,7 +1,7 @@
 import React, { createContext, useReducer } from "react";
 import axios from "axios";
 import AppReducer from "./AppReducer";
-import * as actions from "../util/actionTypes";
+import * as actions from "./actionTypes";
 
 const initialState = {
   credentials: {
