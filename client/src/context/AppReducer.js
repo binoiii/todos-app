@@ -86,9 +86,11 @@ export default (state, action) => {
       };
 
     case actions.EDIT_TODO:
-      const todo = state.todos.find(({ _id }) => _id === action.payload._id);
-      todo.todo = action.payload.todo;
-      return { ...state };
+      return state.todos.map((todo) =>
+        todo._id !== action.payload.id
+          ? todo
+          : { ...todo, todo: action.payload.todo }
+      );
 
     case actions.SET_LOADING:
       return {
