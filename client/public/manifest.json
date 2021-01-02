@@ -3,8 +3,8 @@
   "name": "To Do App MERN Stack",
   "icons": [
     {
-      "src": "todo-icon.jpg",
-      "type": "image/jpg"
+      "src": "todo-icon.png",
+      "type": "image/png"
     }
   ],
   "start_url": ".",
