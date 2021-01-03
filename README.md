@@ -1,4 +1,4 @@
-# Official Repository of TODOS Application
+# Official Repository of TODOs Application
 
 Live Link: https://todos-app-mern.herokuapp.com
 
