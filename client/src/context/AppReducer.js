@@ -86,12 +86,14 @@ export default (state, action) => {
       };
 
     case actions.EDIT_TODO:
-      return state.todos.map((todo) =>
-        todo._id !== action.payload.id
-          ? todo
-          : { ...todo, todo: action.payload.todo }
-      );
-
+      return {
+        ...state,
+        todos: state.todos.map((todo) =>
+          todo._id !== action.payload.id
+            ? todo
+            : { ...todo, todo: action.payload.todo }
+        ),
+      };
     case actions.SET_LOADING:
       return {
         ...state,

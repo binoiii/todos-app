@@ -29,8 +29,6 @@ const GlobalProvider = ({ children }) => {
     dispatcher,
   ] = useReducer(AppReducer, initialState);
 
-  console.log();
-
   const { _id, token } = credentials;
 
   const requestConfig = (id) => {

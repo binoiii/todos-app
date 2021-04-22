@@ -32,11 +32,6 @@ const Todo = ({ todos: { _id, todo } }) => {
 
   const handleChange = (e) => setNewTodo(e.target.value);
 
-  // const handleClick = () => {
-  //   todoRef.current.focus();
-  //   todoRef.current.select();
-  // };
-
   const handleUpdate = (e) => {
     const key = e.key || e.keyCode;
     const type = e.type;
@@ -51,11 +46,13 @@ const Todo = ({ todos: { _id, todo } }) => {
       key === "Enter" ||
       key === 27 ||
       key === "Escape" ||
-      (type === "blur" && prevTodo !== newTodo)
+      type === "blur"
     ) {
       todoRef.current.blur();
-      editTodo(updatedTodo);
-      setPrevTodo(newTodo);
+      if (prevTodo !== newTodo) {
+        editTodo(updatedTodo);
+        setPrevTodo(newTodo);
+      }
     }
   };
 
@@ -82,7 +79,6 @@ const Todo = ({ todos: { _id, todo } }) => {
         aria-describedby="basic-addon2"
         className="border-secondary border-left-0 bg-white"
         onChange={handleChange}
-        // onClick={handleClick}
         onBlur={handleUpdate}
         onKeyDown={handleUpdate}
         ref={todoRef}
